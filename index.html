@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>POCKET GAME STUDIO | HUB 2026</title>
+    <style>
+        :root {
+            --y2k-blue: #00f2ff;
+            --y2k-pink: #ff00ff;
+            --y2k-silver: #e0e0e0;
+            --bg-dark: #030308;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent-glow: rgba(0, 242, 255, 0.15);
+            --minecraft-green: #38e038;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 30%, #16163a 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, #200a20 0%, transparent 40%);
+        }
+
+        /* Scanline Overlay */
+        body::before {
+            content: " ";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            z-index: 100;
+            background-size: 100% 4px;
+            pointer-events: none;
+            opacity: 0.2;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: clamp(28px, 7vw, 56px);
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff 40%, var(--y2k-silver) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--accent-glow));
+        }
+
+        .tagline {
+            margin-top: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--y2k-blue);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .game-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--y2k-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        .visual-container {
+            height: 180px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            transition: 0.4s;
+            overflow: hidden;
+        }
+
+        .game-svg {
+            width: 70px;
+            height: 70px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+            transition: 0.5s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .game-card:hover .game-svg {
+            transform: scale(1.1);
+        }
+
+        .game-content {
+            padding: 24px;
+            flex-grow: 1;
+        }
+
+        .game-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .game-desc {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--y2k-silver);
+            opacity: 0.7;
+            margin-bottom: 15px;
+        }
+
+        .tag-pill {
+            font-size: 9px;
+            padding: 2px 8px;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+
+        .launch-bar {
+            height: 44px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--y2k-blue);
+            transition: 0.3s;
+        }
+
+        .game-card:hover .launch-bar {
+            background: var(--y2k-blue);
+            color: black;
+        }
+
+        /* Credits Section */
+        .credits-section {
+            margin-top: 100px;
+            padding: 40px 20px;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .author-name {
+            font-size: 18px;
+            color: #fff;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .attribution-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--y2k-silver);
+            opacity: 0.6;
+        }
+
+        .attribution-links span {
+            border-bottom: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .attribution-links span:hover {
+            color: var(--y2k-blue);
+            border-color: var(--y2k-blue);
+        }
+
+        #canvas-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 30px 15px; }
+            .game-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<div class="container">
+    <header>
+        <div class="logo-container">
+            <h1>POCKET STUDIO</h1>
+            <p class="tagline">Neural Link Established // Est. 2026</p>
+        </div>
+    </header>
+
+    <div class="game-grid" id="main-grid">
+        <!-- Games will be injected here -->
+    </div>
+
+    <section class="credits-section">
+        <div class="author-name">TEJAS YADAV</div>
+        <div style="font-size: 10px; color: var(--y2k-blue); letter-spacing: 4px; margin-bottom: 20px;">CHIEF ARCHITECT</div>
+        <div class="attribution-links">
+            <span>Powered by Gemini 2.5</span>
+            <span>Deployed on Vercel</span>
+            <span>Version Control via GitHub</span>
+        </div>
+        <div style="margin-top: 30px; font-size: 9px; opacity: 0.3; letter-spacing: 1px;">
+            &copy; 2026 TEJAS YADAV. ALL RIGHTS RESERVED.
+        </div>
+    </section>
+</div>
+
+<script>
+    const GAMES = [
+        {
+            title: "ASCENT",
+            desc: "The Tower Block Challenge. Stack, climb, and balance your way through the high-rise atmosphere.",
+            url: "https://ascent-theta-ten.vercel.app/",
+            color: "#00f2ff",
+            tag: "Tower / Arcade",
+            svg: `<svg class="game-svg" viewBox="0 0 24 24" fill="none" stroke="#00f2ff" stroke-width="1.5"><rect x="6" y="16" width="12" height="6" /><rect x="8" y="10" width="8" height="6" /><rect x="10" y="4" width="4" height="6" /><path d="M12 2v2" /></svg>`
+        },
+        {
+            title: "FLAPPY BIRD MC",
+            desc: "Survival of the blockiest. Navigate your voxel-bird through a pixel-perfect obstacle course.",
+            url: "https://color-swittch.vercel.app/",
+            color: "#38e038",
+            tag: "Minecraft Style",
+            svg: `<svg class="game-svg" viewBox="0 0 24 24" fill="#38e038" stroke="none"><rect x="4" y="4" width="4" height="4"/><rect x="16" y="4" width="4" height="4"/><rect x="4" y="16" width="4" height="4"/><rect x="16" y="16" width="4" height="4"/><rect x="8" y="8" width="8" height="8"/><rect x="10" y="10" width="1" height="1" fill="#000"/><rect x="13" y="10" width="1" height="1" fill="#000"/></svg>`
+        },
+        {
+            title: "DESCENT",
+            desc: "Sub-orbital freefall simulation. Navigate through core-shaft infrastructure while avoiding friction hazards.",
+            url: "https://descent-delta.vercel.app/",
+            color: "#ffcc00",
+            tag: "Infinite Fall",
+            svg: `<svg class="game-svg" viewBox="0 0 24 24" fill="none" stroke="#ffcc00" stroke-width="1.5"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>`
+        },
+        {
+            title: "STARBOUND",
+            desc: "Mobile-Ready Vanguard. Command your ship through the Hive Swarm. Optimised for vertical combat.",
+            url: "https://vanguard-six-kappa.vercel.app/",
+            color: "#ff00ff",
+            tag: "9:16 Mobile",
+            svg: `<svg class="game-svg" viewBox="0 0 24 24" fill="none" stroke="#ff00ff" stroke-width="1.5"><path d="M12 2L9 9l-7 1 5 5-2 7 6-4 6 4-2-7 5-5-7-1-3-7z"/></svg>`
+        }
+    ];
+
+    const grid = document.getElementById('main-grid');
+
+    function init() {
+        grid.innerHTML = GAMES.map(game => `
+            <a href="${game.url}" target="_blank" class="game-card">
+                <div class="visual-container">
+                    ${game.svg}
+                </div>
+                <div class="game-content">
+                    <h2 class="game-title">
+                        <span class="status-dot" style="background:${game.color}; box-shadow: 0 0 10px ${game.color}"></span>
+                        ${game.title}
+                    </h2>
+                    <p class="game-desc">${game.desc}</p>
+                    <span class="tag-pill">${game.tag}</span>
+                </div>
+                <div class="launch-bar">Connect_Link</div>
+            </a>
+        `).join('');
+
+        setupCanvas();
+    }
+
+    function setupCanvas() {
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5;
+                this.speed = Math.random() * 0.3 + 0.1;
+                this.opacity = Math.random() * 0.4;
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < 0) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(0, 242, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 40; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    init();
+</script>
+
+</body>
+</html>
