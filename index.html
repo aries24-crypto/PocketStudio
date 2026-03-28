@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>POCKET GAME STUDIO | HUB 2026</title>
+    
+    <!-- Favicon: Embedded Base64 Pixel Art "P" Icon -->
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAn0lEQVQ4T2NkoBAwUqifYfSDmUgzmYmUAn9/f/+vUuNlZGRkZCSmAMRmwA8GBgaGf0S7gE6u8f379/8Zf/z4wfD69WsGZAF8BvAs+M+IKIDPAPZ/fPnz5w/Dhw8fGJAFAIsBWAzArS60An9/f/8vV+P9+/fv/39UqPEfI0Y9kAmUmkFMBvDjwM+fPxmQBfAZ8P8fI0Y9YCYzYfEA6fIDAL7eSAsM6H7WAAAAAElFTkSuQmCC">
+
     <style>
         :root {
             --y2k-blue: #00f2ff;
@@ -345,6 +349,7 @@
 
     function setupCanvas() {
         const canvas = document.getElementById('canvas-bg');
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let particles = [];
 
@@ -392,7 +397,7 @@
         animate();
     }
 
-    init();
+    window.onload = init;
 </script>
 
 </body>
